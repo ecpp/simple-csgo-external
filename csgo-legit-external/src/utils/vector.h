@@ -49,3 +49,14 @@ struct Vector3
 	// struct data
 	float x, y, z;
 };
+
+struct Vector2 {
+	constexpr Vector2(
+		const float x = 0.f,
+		const float y = 0.f) noexcept :
+		x(x), y(y) { }
+
+	float x, y;
+
+
+};

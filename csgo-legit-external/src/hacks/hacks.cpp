@@ -242,3 +242,49 @@ void hax::legitAim(const MemoryEditor& memory) noexcept
 		}
 	}
 }
+
+void hax::noRecoil(const MemoryEditor& memory) noexcept
+{
+	auto oldPunch = Vector3{};
+	while (globals::runhax)
+	{
+		if (globals::isNoRecoil) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+			const auto localPlayer = memory.Read<std::uintptr_t>(globals::client + offset::dwLocalPlayer);
+			const auto localTeam = memory.Read<std::int32_t>(localPlayer + offset::m_iTeamNum);
+			const auto localPlayerFlags = memory.Read<std::uintptr_t>(localPlayer + offset::m_fFlags);
+			const auto clientState = memory.Read<std::uintptr_t>(globals::engine + offset::dwClientState);
+			const auto localPlayerId =
+				memory.Read<std::int32_t>(clientState + offset::dwClientState_GetLocalPlayer);
+			const auto shotsFired = memory.Read<std::int32_t>(localPlayer + offset::m_iShotsFired);
+			if (shotsFired > 1) {
+				const auto aimPunch = memory.Read<Vector3>(localPlayer + offset::m_aimPunchAngle);
+				const auto viewAngles = memory.Read<Vector3>(clientState + offset::dwClientState_ViewAngles);
+				auto newAngle = viewAngles + oldPunch - aimPunch * 2;
+				
+				//angle limit check
+				if (newAngle.x > 89.0f)
+					newAngle.x = 89.0f;
+
+				if (newAngle.x < -89.0f)
+					newAngle.x = -89.0f;
+
+				if (newAngle.y > 180.0f)
+					newAngle.y = 180.0f;
+
+				if (newAngle.y < -180.0f)
+					newAngle.y = -180.0f;
+
+
+				memory.Write<Vector3>(clientState + offset::dwClientState_ViewAngles, newAngle);
+				oldPunch = aimPunch * 2;
+			}
+			else {
+				oldPunch = 0;
+			}
+			
+
+		}
+	}
+}

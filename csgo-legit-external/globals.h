@@ -165,6 +165,7 @@ namespace globals {
 	inline bool isbunny = false;
 	inline bool isradar = false;
 	inline bool islegitAim = false;
+	inline bool isNoRecoil = false;
 	inline std::uintptr_t client = 0;
 	inline std::uintptr_t engine = 0;
 	inline std::uintptr_t serverbrowser = 0;
