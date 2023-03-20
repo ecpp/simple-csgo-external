@@ -171,4 +171,9 @@ namespace globals {
 	inline std::uintptr_t serverbrowser = 0;
 	inline bool runhax = true;
 	inline auto legitAimSmooth = 0.2f;
+
+
+	inline std::uintptr_t localPlayer = 0;
+	inline std::int32_t localTeam = 0;
+	inline std::uintptr_t localPlayerFlags = 0;
 }

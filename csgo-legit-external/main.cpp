@@ -31,7 +31,8 @@ int main()
 	std::cout << "ID (client.dll):" << globals::client << std::endl;
 	std::cout << "ID (engine.dll):" << globals::engine << std::endl;
 
-	std::thread{ hax::aim, memory }.detach();
+	std::thread(hax::readGlobals, memory).detach();
+	std::thread(hax::aim, memory).detach();
 	std::thread(hax::bunny, memory).detach();
 	std::thread(hax::radar, memory).detach();
 	std::thread(hax::legitAim, memory).detach();

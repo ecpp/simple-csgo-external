@@ -14,6 +14,16 @@ constexpr Vector3 CalculateAngle(
 	return ((enemyPosition - localPosition).ToAngle() - viewAngles);
 }
 
+void hax::readGlobals(const MemoryEditor& memory) noexcept
+{
+	while (globals::runhax) {
+		globals::localPlayer = memory.Read<std::uintptr_t>(globals::client + offset::dwLocalPlayer);
+		globals::localTeam = memory.Read<std::int32_t>(globals::localPlayer + offset::m_iTeamNum);
+		globals::localPlayerFlags = memory.Read<std::uintptr_t>(globals::localPlayer + offset::m_fFlags);
+	}
+	
+}
+
 void hax::aim(const MemoryEditor& memory) noexcept
 {
 	while (globals::runhax)
@@ -25,15 +35,11 @@ void hax::aim(const MemoryEditor& memory) noexcept
 			if (!GetAsyncKeyState(0x58))
 				continue;
 
-			// get local player
-			const auto localPlayer = memory.Read<std::uintptr_t>(globals::client + offset::dwLocalPlayer);
-			const auto localTeam = memory.Read<std::int32_t>(localPlayer + offset::m_iTeamNum);
-			const auto localPlayerFlags = memory.Read<std::uintptr_t>(localPlayer + offset::m_fFlags);
 
 
 			// eye position = origin + viewOffset
-			const auto localEyePosition = memory.Read<Vector3>(localPlayer + offset::m_vecOrigin) +
-				memory.Read<Vector3>(localPlayer + offset::m_vecViewOffset);
+			const auto localEyePosition = memory.Read<Vector3>(globals::localPlayer + offset::m_vecOrigin) +
+				memory.Read<Vector3>(globals::localPlayer + offset::m_vecViewOffset);
 
 			const auto clientState = memory.Read<std::uintptr_t>(globals::engine + offset::dwClientState);
 
@@ -43,7 +49,7 @@ void hax::aim(const MemoryEditor& memory) noexcept
 			//bunny(localPlayer, localTeam, localPlayerFlags, memory, client);
 
 			const auto viewAngles = memory.Read<Vector3>(clientState + offset::dwClientState_ViewAngles);
-			const auto aimPunch = memory.Read<Vector3>(localPlayer + offset::m_aimPunchAngle) * 2;
+			const auto aimPunch = memory.Read<Vector3>(globals::localPlayer + offset::m_aimPunchAngle) * 2;
 
 			// aimbot fov
 			auto bestFov = 50.f;
@@ -53,7 +59,7 @@ void hax::aim(const MemoryEditor& memory) noexcept
 			{
 				const auto player = memory.Read<std::uintptr_t>(globals::client + offset::dwEntityList + i * 0x10);
 
-				if (memory.Read<std::int32_t>(player + offset::m_iTeamNum) == localTeam)
+				if (memory.Read<std::int32_t>(player + offset::m_iTeamNum) == globals::localTeam)
 					continue;
 
 				if (memory.Read<bool>(player + offset::m_bDormant))
