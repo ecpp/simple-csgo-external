@@ -1,5 +1,5 @@
 # About
-It my first attempt of making a external cheat for CSGO. It is simple yet effective. Special thanks to @cazzwastaken for his tutorials.
+It is my first attempt of making a external cheat for CSGO. It is simple yet effective. Special thanks to @cazzwastaken for his tutorials.
 
 # Features
 - Rage/Legit Aimbot
